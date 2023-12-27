@@ -629,7 +629,7 @@ class PhotoCtrl(wx.App):
             print(f"getPowerNumber(): handy.card1.rank = {handy.card1.rank}, handy.card2.index = {handy.card2.index}")
             if handy.card2.index >= 0:
                 powerNumber = self.df[handy.card1.rank][handy.card2.index]
-                print(f"getPowerNumber(): {handy.handStr}: powerNumber = {powerNumber}")
+                print(f"{handy.handStr},                                                                                powerNumber = {powerNumber}")
             else:
                 powerNumberTemp = self.df['Q'][11]
                 print(f"getPowerNumber(): {powerNumberTemp}")
@@ -638,29 +638,45 @@ class PhotoCtrl(wx.App):
 
         return (handy, powerNumber)
         
-    def doCardsContain(self, cardIndex1, cardIndex2, practiceCards):
+    def doCardsContain(self, cardIndexArr, practiceCards):
         retVal = False
-        card1_cardName = CARD_TEXT[cardIndex1]
-        card2_cardName = CARD_TEXT[cardIndex2]
+        i = 0
+        j = 1
+        card1_ind = cardIndexArr[i]
+        card2_ind = cardIndexArr[j]        
+        card1_cardName = CARD_TEXT[card1_ind]
+        card2_cardName = CARD_TEXT[card2_ind]
+        print(f"doCardsContain(): length of cardIndexArr = {len(cardIndexArr)}. length of deck = {len(practiceCards)}")
         for practiceCard in practiceCards:
+            print(f"doCardsContain(): card1_name = {card1_cardName[0]}, card2_name = {card2_cardName[0]}, practiceCard = {practiceCard}")            
             if card1_cardName[0] == practiceCard:
                 retVal = True
                 break
             elif card2_cardName[0] == practiceCard:
                 retVal = True
                 break
+            i += 2
+            j += 2
+            if i >= len(cardIndexArr):
+                break
+            card1_ind = cardIndexArr[i]
+            card2_ind = cardIndexArr[j]        
+            card1_cardName = CARD_TEXT[card1_ind]
+            card2_cardName = CARD_TEXT[card2_ind]            
         return retVal
+        
+# Hey, everybody: did u know? q8 is 8 q9 is nine q6 is 6. That's pretty amazing.
+# As a matter of fact q9-q5 is a gimme, overlapping three-fers:  9, 8, 6, 6, 6. Then not too far away is 5,5,4. 
+# Next, compare with suited.        
 
-    def flashBigOleTitties(self, numCards, practiceCards=['a', 'k']):
+    def flashBigOleTitties(self, numCards, practiceCards=['k']):
         err = 0
         fullfilename_base = PICS_DIR + '/'
-        self.cardIndexArr = self.deck.takeCards(numCards)
+        self.cardIndexArr = self.deck.takeCards(numCards * len(practiceCards))
 
         k = 0
         while True:
-            card1 = self.cardIndexArr[0]
-            card2 = self.cardIndexArr[1]
-            if self.doCardsContain(card1, card2, practiceCards) or k > 100:
+            if self.doCardsContain(self.cardIndexArr, practiceCards) or k > 100:
                 break
             self.cardIndexArr = self.deck.takeCards(numCards)
             k+= 1
@@ -868,7 +884,8 @@ class PhotoCtrl(wx.App):
 
     def printSessionLog(self):
         for lo in self.sessionLog:
-            print(f"{lo}")
+            #print(f"{lo}")
+            break
         
     def grayAllCards(self, updateDisplay=False):
         between = True
