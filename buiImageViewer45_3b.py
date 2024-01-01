@@ -13,7 +13,7 @@ HOME_BETWEEN = 3
 WORK_BETWEEN = 2
 COLUMN_INDEX_STARTING_VAL = 14
 
-PICS_DIR = "D:/groovyScripts/wxPython/cards"
+PICS_DIR = "groovyScripts/wxPython/cards"
 BG_IMAGES = ["bg.jpg", "bg2.jpg", "bga.jpg", "bg2a.jpg"]
 CARD_IMAGES = [
 "ac.jpg",
@@ -524,12 +524,26 @@ class PhotoCtrl(wx.App):
         self.numTestsTxt.SetValue(str(self.numTests))
         self.panel.Refresh()
  
+    def getPicsDir(self, pics_dir=PICS_DIR):
+        data_drive = ""
+        err = 0
+        try:
+            data_drive = os.environ['data_drive']
+        except:
+            err = 1
+            
+        if err:
+            data_drive = "D:"
+            
+        return data_drive + '/' + pics_dir
+                
     def onBrowse(self, event):
         """ 
         Browse for file
         """
         wildcard = "JPEG files (*.jpg)|*.jpg"
-        self.photoTxt.SetValue(PICS_DIR)
+        pics_dir = self.getPicsDir()
+        self.photoTxt.SetValue(pics_dir)
         self.onView()
  
     def onView(self):
@@ -671,7 +685,8 @@ class PhotoCtrl(wx.App):
 
     def flashBigOleTitties(self, numCards, practiceCards=['k']):
         err = 0
-        fullfilename_base = PICS_DIR + '/'
+        pics_dir = self.getPicsDir()
+        fullfilename_base = pics_dir + '/'
         self.cardIndexArr = self.deck.takeCards(numCards * len(practiceCards))
 
         k = 0
@@ -810,7 +825,8 @@ class PhotoCtrl(wx.App):
         
     def flashNextHand(self, numCards):
         err = 0
-        fullfilename_base = PICS_DIR + '/'
+        pics_dir = self.getPicsDir()
+        fullfilename_base = pics_dir + '/'
         self.cardIndexArr = self.deck.takeCards(numCards)
         ctrl = None
         ctrl2 = None
@@ -924,7 +940,8 @@ class PhotoCtrl(wx.App):
     def setBitmap(self, ctrl, between=False, imageIndex=-1):
         err = 0
         filename = ""
-        fullfilename = PICS_DIR + '/'
+        pics_dir = self.getPicsDir()        
+        fullfilename = pics_dir + '/'
         if imageIndex < 0 and between:
             try:
                 filename = BG_IMAGES[self.location_ind2]
